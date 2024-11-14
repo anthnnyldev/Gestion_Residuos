@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #APPS
     'core.security',
+    'core.home'
 ]
 
 MIDDLEWARE = [
@@ -41,7 +42,7 @@ MIDDLEWARE = [
 
 LOGIN_URL = '/security/auth/login/'
 LOGIN_REDIRECT_URL = '/'
-AUTH_USER_MODEL = 'security.User'
+#AUTH_USER_MODEL = 'security.User'
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -55,7 +56,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'core.dashboard.context_processors.chatgpt_context',
             ],
         },
     },
@@ -111,16 +111,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-AUTH_USER_MODEL = 'security.User'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-#hola
-#asfafsaf
-#asfafe4f4ef
-#michel god
-#borrado
-#afafss
