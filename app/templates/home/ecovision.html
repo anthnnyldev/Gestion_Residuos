@@ -7,35 +7,32 @@
         <h1 class="text-4xl font-bold text-gray-800 mb-6">Visualización de los Datos de Contaminación Global</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Tarjeta para el gráfico de barras de residuos orgánicos -->
             <div class="bg-white shadow-lg rounded-lg p-6">
                 <h2 class="text-2xl font-semibold mb-4">Porcentaje de Residuos Orgánicos</h2>
-                <svg id="foodWasteChart" width="100%" height="200"></svg> <!-- Altura ajustada -->
+                <svg id="foodWasteChart" width="100%" height="300"></svg>
             </div>
 
-            <!-- Tarjeta para el gráfico de torta de composición de residuos -->
             <div class="bg-white shadow-lg rounded-lg p-6">
                 <h2 class="text-2xl font-semibold mb-4">Composición de Residuos</h2>
-                <svg id="wasteCompositionChart" width="100%" height="200"></svg> <!-- Altura ajustada -->
+                <svg id="wasteCompositionChart" width="100%" height="300"></svg>
+                <div id="legend" class="mt-4"></div>
             </div>
         </div>
     </div>
 
-    <!-- Cargar D3.js desde la CDN -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <script>
-        // `data` ahora está en formato JSON válido y puede ser usado en d3_chart.js
         const data = {{ data|safe }};
-        console.log(data); // Verificar los datos en la consola
+        console.log(data);
 
         // Gráfico de Barras de Residuos Orgánicos
         const foodWasteData = data.food_waste;
         const countries = data.countries;
 
-        const foodWasteMargin = { top: 10, right: 10, bottom: 20, left: 40 };
+        const foodWasteMargin = { top: 20, right: 30, bottom: 40, left: 60 };
         const foodWasteWidth = 600 - foodWasteMargin.left - foodWasteMargin.right;
-        const foodWasteHeight = 200 - foodWasteMargin.top - foodWasteMargin.bottom; // Aumentar altura
+        const foodWasteHeight = 300 - foodWasteMargin.top - foodWasteMargin.bottom;
 
         const foodWasteSvg = d3.select("#foodWasteChart")
             .append("g")
@@ -54,25 +51,33 @@
         foodWasteSvg.append("g")
             .attr("class", "x-axis")
             .attr("transform", `translate(0, ${foodWasteHeight})`)
-            .call(d3.axisBottom(x));
+            .call(d3.axisBottom(x).tickFormat((d, i) => countries[i]));
 
         foodWasteSvg.append("g")
             .attr("class", "y-axis")
             .call(d3.axisLeft(y));
 
-        // Animación de las barras
+        const tooltip = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
+
         foodWasteSvg.selectAll(".bar")
             .data(foodWasteData)
             .enter().append("rect")
             .attr("class", "bar")
             .attr("x", (d, i) => x(countries[i]))
-            .attr("y", foodWasteHeight) // Comienza desde la parte inferior
+            .attr("y", foodWasteHeight)
             .attr("width", x.bandwidth())
-            .attr("height", 0) // Altura inicial 0
-            .transition() .duration(800)
+            .attr("height", 0)
+            .attr("fill", "rgba(75, 192, 192, 0.7)")
+            .on("mouseover", function(event, d) {
+                tooltip.transition().duration(200).style("opacity", .9);
+                tooltip.html(`Residuos: ${d}`).style("left", (event.pageX + 5) + "px").style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", function() {
+                tooltip.transition().duration( 200).style("opacity", 0);
+            })
+            .transition().duration(800)
             .attr("y", d => y(d))
-            .attr("height", d => foodWasteHeight - y(d))
-            .attr("fill", "rgba(75, 192, 192, 0.7)");
+            .attr("height", d => foodWasteHeight - y(d));
 
         // Gráfico de Torta de Composición de Residuos
         const wasteCompositionData = [
@@ -83,7 +88,7 @@
         ];
 
         const wasteCompositionWidth = 300;
-        const wasteCompositionHeight = 200; // Aumentar altura
+        const wasteCompositionHeight = 300;
         const wasteCompositionRadius = Math.min(wasteCompositionWidth, wasteCompositionHeight) / 2;
 
         const wasteCompositionSvg = d3.select("#wasteCompositionChart")
@@ -108,14 +113,36 @@
         arcs.append("path")
             .attr("d", arc)
             .attr("fill", d => color(d.data))
-            .attr("transform", "scale(0)") // Comienza desde escala 0
-            .transition() // Transición
+            .attr("transform", "scale(0)")
+            .transition()
             .duration(800)
-            .attr("transform", "scale(1)"); // Escala final
+            .attr("transform", "scale(1)");
 
         arcs.append("text")
             .attr("transform", d => `translate(${arc.centroid(d)})`)
             .attr("dy", ".35em")
             .text(d => d.data.toFixed(2) + '%');
+
+        // Leyenda
+        const legend = d3.select("#legend")
+            .selectAll(".legend-item")
+            .data(color.domain())
+            .enter().append("div")
+            .attr("class", "legend-item")
+            .style("display", "flex")
+            .style("align-items", "center")
+            .style("margin", "5px 0");
+
+        legend.append("div")
+            .style("width", "20px")
+            .style("height", "20px")
+            .style("background-color", d => color(d))
+            .style("margin-right", "10px");
+
+        legend.append("span")
+            .text((d, i) => {
+                const labels = ['Residuos Orgánicos', 'Residuos Plásticos', 'Residuos de Papel', 'Residuos Metálicos'];
+                return labels[i];
+            });
     </script>
 {% endblock %}
