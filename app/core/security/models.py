@@ -21,12 +21,23 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self.create_user(email, password, **extra_fields)
+    
+class Points(models.Model):
+    number = models.PositiveIntegerField()
+    user = models.ForeignKey('FinalUser', on_delete=models.CASCADE, related_name="points")
+    created_at= models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = 'Punto'
+        verbose_name_plural = 'Puntos'
+    
+    def __str__(self):
+        return f"{self.number} puntos"
 
 class FinalUser(AbstractUser):
     email = models.EmailField(unique=True)
     is_admin_user = models.BooleanField(default=False)
     groups = models.ManyToManyField(Group, related_name='security_finaluser_set', blank=True)
-    points = models.ForeignKey(FinalUser, on_delete=models.CASCADE, related_name="points")
     user_permissions = models.ManyToManyField(
         'auth.Permission', related_name='security_finaluser_permissions', blank=True
     )
@@ -53,29 +64,23 @@ class AdminUser(AbstractUser):
         verbose_name_plural = 'Administradores'
         
 
-
-class Product(models.Model):
-    description= models.CharField( max_length=50)
-    image = models.ImageField( upload_to=None, )
-    created_at= models.DateTimeField(auto_now_add=True)
-    updated_at= models.DateTimeField (auto_now=True)
-    units = models.ForeignKey(Units, on_delete=models.CASCADE, related_name="units")
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="categorias")
+class Units(models.Model):
+    description = models.CharField("Nombre de unidad", max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = 'Producto'
-        verbose_name_plural = 'Productos'
+        verbose_name = 'Unidad'
+        verbose_name_plural = 'Unidades'
     
     def __str__(self):
-        return f"{self.description} ,{self.image} {self.created_at}, {self.updated_at}"
-    
+        return f"{self.description}, {self.created_at} {self.updated_at}"
+
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    created_at= models.DateTimeField(auto_now_add=True)
-    updated_at= models.DateTimeField (auto_now=True)
-    
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         verbose_name = 'Categoría'
@@ -83,30 +88,19 @@ class Category(models.Model):
     
     def __str__(self):
         return self.name
-    
 
-class Units(models.Model):
-    description= models.CharField(("Nombre de unidad"), max_length=50)
-    created_at= models.DateTimeField(auto_now_add=True)
-    updated_at= models.DateTimeField (auto_now=True)
+
+class Product(models.Model):
+    description = models.CharField(max_length=50)
+    image = models.ImageField(upload_to=None)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    units = models.ForeignKey(Units, on_delete=models.CASCADE, related_name="products")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products")
     
     class Meta:
-        verbose_name = 'Unidad'
-        verbose_name_plural = 'Unidades'
+        verbose_name = 'Producto'
+        verbose_name_plural = 'Productos'
     
     def __str__(self):
-        return f"{self.description} ,{self.created_at} {self.updated_at}"
-    
-    
-class Points(models.Model):
-    number = models.PositiveIntegerField()
-    created_at= models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        verbose_name = 'Punto'
-        verbose_name_plural = 'Puntos'
-    
-    def __str__(self):
-        return f"{self.number} puntos"
-
-
+        return f"{self.description}, {self.image} {self.created_at}, {self.updated_at}"

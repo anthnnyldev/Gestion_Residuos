@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import *
+from .models import FinalUser, AdminUser, Product, Units, Points, Category
+
 # Register your models here.
 @admin.register(FinalUser)
 class FinalUserAdmin(admin.ModelAdmin):
@@ -16,26 +17,18 @@ class AdminUserAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('description', 'image', 'created_at', 'updated_at')
-    search_fields = ('description')
+    search_fields = ('description',)
 
-
-@admin.register(Unit)
+@admin.register(Units)
 class UnitsAdmin(admin.ModelAdmin):
-    list_display = ('description',  'created_at', 'updated_at')
-    search_fields = ('description')
-    
-@admin.register(Product)
-class PointsAdmin(admin.ModelAdmin):
-    list_display = ('number', 'user', 'updated_at')
-    search_fields = ('description')
-
-
+    list_display = ('description', 'created_at', 'updated_at')
+    search_fields = ('description',)
+  
 @admin.register(Points)
 class PointsAdmin(admin.ModelAdmin):
-    list_display = ('number', 'user', 'created_at')  
-    search_fields = ('user__email',)
+    list_display = ('number', 'created_at')
     
     
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display= ('name')
+    list_display = ('name',)
