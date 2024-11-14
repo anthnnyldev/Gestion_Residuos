@@ -1,8 +1,90 @@
 {% extends 'components/base.html' %}
 {% load static %}
 {% block title %}Inicio{% endblock %}
+
 {% block content %}
 
-<h3>hola</h3>
+<section class="bg-sky-600 text-white py-20">
+  <div class="container mx-auto px-6 text-center">
+    <h1 class="text-4xl font-bold mb-4">Bienvenidos a EcoGestión</h1>
+    <p class="text-lg mb-6">Soluciones innovadoras para la gestión de residuos y el cuidado del planeta.</p>
+    <a href="#" class="bg-white text-sky-600 px-6 py-3 rounded-full text-lg font-semibold hover:bg-sky-700 hover:text-white transition">Descubre más</a>
+  </div>
+</section>
+
+<section class="py-16 bg-gray-100">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Nuestros Beneficios</h2>
+    <div class="flex flex-wrap -mx-4">
+      <div class="w-full md:w-1/3 px-4 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="text-sky-600 text-5xl mb-4 flex items-center justify-center">
+            <i class="bx bx-recycle"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-2">Reciclaje Eficiente</h3>
+          <p class="text-gray-600">Facilitamos el proceso de reciclaje para reducir el impacto ambiental y fomentar la economía circular.</p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/3 px-4 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="text-sky-600 text-5xl mb-4 flex items-center justify-center">
+            <i class="bx bx-leaf"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-2">Tecnología Verde</h3>
+          <p class="text-gray-600">Utilizamos herramientas tecnológicas avanzadas para optimizar la gestión de residuos.</p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/3 px-4 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="text-sky-600 text-5xl mb-4 flex items-center justify-center">
+            <i class="bx bx-group"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-2">Compromiso Comunitario</h3>
+          <p class="text-gray-600">Trabajamos con comunidades para crear conciencia y fomentar prácticas sostenibles.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-16">
+  <div class="container mx-auto px-6 text-center">
+    <h2 class="text-3xl font-semibold text-gray-800 mb-8">Estadísticas de Impacto</h2>
+    <div class="flex flex-wrap -mx-4">
+      <div class="w-full md:w-1/4 px-4 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-4xl font-bold text-sky-600">95%</h3>
+          <p class="text-gray-600">Residuos reciclados</p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/4 px-4 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-4xl font-bold text-sky-600">80k+</h3>
+          <p class="text-gray-600">Clientes satisfechos</p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/4 px-4 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-4xl font-bold text-sky-600">100+</h3>
+          <p class="text-gray-600">Proyectos completados</p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/4 px-4 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-4xl font-bold text-sky-600">50%</h3>
+          <p class="text-gray-600">Reducción de huella de carbono</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-sky-600 text-white py-16">
+  <div class="container mx-auto px-6 text-center">
+    <h2 class="text-3xl font-semibold mb-4">Únete a nosotros en la misión de salvar el planeta</h2>
+    <p class="text-lg mb-6">Empieza hoy mismo a gestionar tus residuos de forma inteligente.</p>
+    <a href="#" class="bg-white text-sky-600 px-6 py-3 rounded-full text-lg font-semibold hover:bg-sky-700 hover:text-white transition">Contáctanos</a>
+  </div>
+</section>
 
 {% endblock %}
