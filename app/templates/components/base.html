@@ -17,12 +17,11 @@
             </a>
             <div class="flex items-center">
                 <a href="{% url 'home:home' %}" class="text-white hover:text-gray-300 px-4">Inicio</a>
-                <a href="#" class="text-white hover:text-gray-300 px-4">Ecovision</a>
+                <a href="{% url 'home:datos' %}" class="text-white hover:text-gray-300 px-4">Ecovision</a>
                 <a href="{% url 'home:noticias' %}" class="text-white hover:text-gray-300 px-4">Noticias</a>
                 <a href="{% url 'home:tutorial' %}" class="text-white hover:text-gray-300 px-4">Tutorial</a>
                 <a href="{% url 'home:about' %}" class="text-white hover:text-gray-300 px-4">Sobre Nosotros</a>
                 <a href="{% url 'home:contacto' %}" class="text-white hover:text-gray-300 px-4">Contacto</a>
-                <a href="{% url 'home:datos' %}" class="text-white hover:text-gray-300 px-4">Datos</a>
                 <a href="#" class="bg-white text-sky-600 font-semibold px-4 py-2 rounded-full hover:bg-gray-200 transition-all">Login</a>
             </div>
         </div>
@@ -54,5 +53,11 @@
             </div>
         </div>
     </footer>
+
+    
+    <!-- Cargar la librería D3.js -->
+    <script src="{% static 'js/d3.v7.js' %}"></script>
+    <script src="{% static 'js/d3.v7.min.js' %}"></script>
+    <script src="{% static 'js/d3_chart.js' %}"></script>
 </body>
 </html>

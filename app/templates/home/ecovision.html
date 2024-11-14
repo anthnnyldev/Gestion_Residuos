@@ -1,9 +1,18 @@
 {% extends 'components/base.html' %}
 {% load static %}
-{% block title %}Inicio{% endblock %}
+{% block title %}Visualización de Datos{% endblock %}
 
 {% block content %}
+    <div class="p-8 bg-pink-50">
+        <h1 class="text-3xl font-semibold text-gray-700 mb-6">Visualización de los Datos de Desperdicio</h1>
 
+        <!-- Div para contener el gráfico de barras -->
+        <div id="barChart" class="mt-8"></div>
 
+        <!-- Div para contener el gráfico de líneas -->
+        <div id="lineChart" class="mt-8"></div>
 
+        <!-- Div para contener el gráfico de torta -->
+        <div id="pieChart" class="mt-8"></div>
+    </div>
 {% endblock %}

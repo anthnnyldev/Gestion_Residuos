@@ -1,36 +1,15 @@
 import csv
-from django.views import View
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from core.home.models import WasteComposition
+from django.shortcuts import render
+from django.conf import settings
+import os
 
-class UploadCSVView(View):
-    template_name = 'home/ecovision.html'
+def load_waste_data(request):
+    file_path = os.path.join(settings.BASE_DIR, 'core', 'home', 'data', 'data.csv')
 
-    def get(self, request):
-        return render(request, self.template_name)
-
-    def post(self, request):
-        if request.FILES.get('file'):
-            file = request.FILES['file']
-            file_data = file.read().decode("utf-8")
-            lines = file_data.splitlines()
-            reader = csv.DictReader(lines)
-
-            WasteComposition.objects.all().delete()
-            for row in reader:
-                WasteComposition.objects.create(
-                    region_id=int(row['region_id']),
-                    country_name=row['country_name'],
-                    gdp=float(row['gdp']),
-                    composition_food_organic_waste_percent=float(row['composition_food_organic_waste_percent']),
-                    composition_glass_percent=float(row['composition_glass_percent']),
-                    composition_metal_percent=float(row['composition_metal_percent']),
-                    composition_other_percent=float(row['composition_other_percent']),
-                    composition_paper_cardboard_percent=float(row['composition_paper_cardboard_percent']),
-                    composition_plastic_percent=float(row['composition_plastic_percent']),
-                    composition_rubber_leather_percent=float(row['composition_rubber_leather_percent']),
-                )
-            messages.success(request, "CSV subido y datos guardados exitosamente")
-            return redirect('datos_html')
-        return render(request, self.template_name)
+    data = []
+    with open(file_path, mode='r') as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            data.append(row)
+    
+    return render(request, 'home/ecovision.html', {'data': data})
