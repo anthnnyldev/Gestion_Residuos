@@ -25,8 +25,8 @@ class CustomUserManager(BaseUserManager):
 class FinalUser(AbstractUser):
     email = models.EmailField(unique=True)
     is_admin_user = models.BooleanField(default=False)
-    
     groups = models.ManyToManyField(Group, related_name='security_finaluser_set', blank=True)
+    points = models.ForeignKey(FinalUser, on_delete=models.CASCADE, related_name="points")
     user_permissions = models.ManyToManyField(
         'auth.Permission', related_name='security_finaluser_permissions', blank=True
     )
@@ -41,7 +41,6 @@ class FinalUser(AbstractUser):
 class AdminUser(AbstractUser):
     email = models.EmailField(unique=True)
     is_admin_user = models.BooleanField(default=True)
-
     groups = models.ManyToManyField(Group, related_name='security_adminuser_set', blank=True)
     user_permissions = models.ManyToManyField(
         'auth.Permission', related_name='security_adminuser_permissions', blank=True
@@ -52,3 +51,62 @@ class AdminUser(AbstractUser):
     class Meta:
         verbose_name = 'Administrador'
         verbose_name_plural = 'Administradores'
+        
+
+
+class Product(models.Model):
+    description= models.CharField( max_length=50)
+    image = models.ImageField( upload_to=None, )
+    created_at= models.DateTimeField(auto_now_add=True)
+    updated_at= models.DateTimeField (auto_now=True)
+    units = models.ForeignKey(Units, on_delete=models.CASCADE, related_name="units")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="categorias")
+    
+    class Meta:
+        verbose_name = 'Producto'
+        verbose_name_plural = 'Productos'
+    
+    def __str__(self):
+        return f"{self.description} ,{self.image} {self.created_at}, {self.updated_at}"
+    
+
+class Category(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    created_at= models.DateTimeField(auto_now_add=True)
+    updated_at= models.DateTimeField (auto_now=True)
+    
+    
+    
+    class Meta:
+        verbose_name = 'Categoría'
+        verbose_name_plural = 'Categorías'
+    
+    def __str__(self):
+        return self.name
+    
+
+class Units(models.Model):
+    description= models.CharField("Nombre de unidad"), max_length=50)
+    created_at= models.DateTimeField(auto_now_add=True)
+    updated_at= models.DateTimeField (auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Unidad'
+        verbose_name_plural = 'Unidades'
+    
+    def __str__(self):
+        return f"{self.description} ,{self.created_at} {self.updated_at}"
+    
+    
+class Points(models.Model):
+    number = models.PositiveIntegerField()
+    created_at= models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = 'Punto'
+        verbose_name_plural = 'Puntos'
+    
+    def __str__(self):
+        return f"{self.number} puntos"
+
+
