@@ -29,7 +29,6 @@ class CustomUserManager(BaseUserManager):
 
 class FinalUser(AbstractUser):
     email = models.EmailField(unique=True)
-    photo= models.ImageField(_(""), upload_to=None, height_field=None, width_field=None, max_length=None)
     is_admin_user = models.BooleanField(default=False)
     
     objects = CustomUserManager()
@@ -41,7 +40,6 @@ class FinalUser(AbstractUser):
 
 class AdminUser(AbstractUser):
     email = models.EmailField(unique=True)
-    photo= models.ImageField(_(""), upload_to=None, height_field=None, width_field=None, max_length=None)
     is_admin_user = models.BooleanField(default=True)
 
     objects = CustomUserManager()
