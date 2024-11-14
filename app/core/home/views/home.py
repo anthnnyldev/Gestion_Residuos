@@ -4,17 +4,15 @@ from django.views.generic import TemplateView, ListView
 class HomeView(TemplateView):
     template_name = 'home/home.html'
 
-class NoticiasView(TemplateView):
-    template_name = 'noticias.html'
+class NewsView(TemplateView):
+    template_name = 'home/news.html'
 
 class TutorialView(TemplateView):
-    template_name = 'tutorial.html'
+    template_name = 'home/tutorial.html'
+    
 
-class SobreNosotrosView(TemplateView):
-    template_name = 'about.html'
+class ContactosView(TemplateView):
+    template_name = 'home/contact.html'
 
-class ContactoView(TemplateView):
-    template_name = 'contacto.html'
-
-class LoginView(TemplateView):
-    template_name = 'login.html'
+class AboutView(TemplateView):
+    template_name = 'home/about.html'
