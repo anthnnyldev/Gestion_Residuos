@@ -86,7 +86,7 @@ class Category(models.Model):
     
 
 class Units(models.Model):
-    description= models.CharField("Nombre de unidad"), max_length=50)
+    description= models.CharField(("Nombre de unidad"), max_length=50)
     created_at= models.DateTimeField(auto_now_add=True)
     updated_at= models.DateTimeField (auto_now=True)
     
