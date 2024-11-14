@@ -42,7 +42,7 @@ MIDDLEWARE = [
 
 LOGIN_URL = '/security/auth/login/'
 LOGIN_REDIRECT_URL = '/'
-#AUTH_USER_MODEL = 'security.User'
+#AUTH_USER_MODEL = 'security.FinalUser'
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
