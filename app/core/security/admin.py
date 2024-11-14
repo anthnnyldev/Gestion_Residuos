@@ -26,9 +26,9 @@ class UnitsAdmin(admin.ModelAdmin):
   
 @admin.register(Points)
 class PointsAdmin(admin.ModelAdmin):
-    list_display = ('number', 'created_at')
+    list_display = ('number', 'created_at', 'user')
     
     
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name','created_at', 'updated_at' )
