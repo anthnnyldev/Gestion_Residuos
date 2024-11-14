@@ -11,7 +11,7 @@ class TutorialView(TemplateView):
     template_name = 'tutorial.html'
 
 class SobreNosotrosView(TemplateView):
-    template_name = 'sobre_nosotros.html'
+    template_name = 'about.html'
 
 class ContactoView(TemplateView):
     template_name = 'contacto.html'
