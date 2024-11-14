@@ -1,9 +1,4 @@
-from django.db import models
-# Create your models here.
-
-#2 model of user   final user  and admin user
-# models.py
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Group
 from django.db import models
 
 
@@ -32,6 +27,11 @@ class FinalUser(AbstractUser):
     email = models.EmailField(unique=True)
     is_admin_user = models.BooleanField(default=False)
     
+    groups = models.ManyToManyField(Group, related_name='security_finaluser_set', blank=True)
+    user_permissions = models.ManyToManyField(
+        'auth.Permission', related_name='security_finaluser_permissions', blank=True
+    )
+    
     objects = CustomUserManager()
 
     class Meta:
@@ -43,11 +43,13 @@ class AdminUser(AbstractUser):
     email = models.EmailField(unique=True)
     is_admin_user = models.BooleanField(default=True)
 
+    groups = models.ManyToManyField(Group, related_name='security_adminuser_set', blank=True)
+    user_permissions = models.ManyToManyField(
+        'auth.Permission', related_name='security_adminuser_permissions', blank=True
+    )
+
     objects = CustomUserManager()
 
     class Meta:
         verbose_name = 'Administrador'
-        verbose_name_plural = 'Adminnistradores'
-
-
-
+        verbose_name_plural = 'Administradores'
