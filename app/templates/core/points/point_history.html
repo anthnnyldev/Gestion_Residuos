@@ -1,0 +1,33 @@
+    {% extends 'components/base_dash.html' %}
+
+    {% block content %}
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold text-white mb-4">Historial de Puntos</h1>
+        <div class="bg-gray-800 p-4 rounded-lg shadow-md">
+            <table class="min-w-full table-auto text-white">
+                <thead>
+                    <tr class="border-b">
+                        <th class="px-4 py-2 text-left">Fecha</th>
+                        <th class="px-4 py-2 text-left">Puntos</th>
+                        <th class="px-4 py-2 text-left">Acción</th>
+                        <th class="px-4 py-2 text-left">Creado por</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for history in point_histories %}
+                    <tr class="border-t">
+                        <td class="px-4 py-2">{{ history.created_at|date:"Y-m-d H:i" }}</td>
+                        <td class="px-4 py-2">{{ history.points }}</td>
+                        <td class="px-4 py-2">{{ history.action }}</td>
+                        <td class="px-4 py-2">{{ history.created_by.first_name }} {{ history.created_by.last_name }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center px-4 py-2">No hay historial de puntos disponible.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endblock %}
