@@ -96,38 +96,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-
-class Location(models.Model):
-    name = models.CharField(max_length=100)
-    address = models.CharField(max_length=255)
-    city = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=20)
-    contact_phone = models.CharField(max_length=20, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="created_locations"
-    )
-    updated_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="updated_locations"
-    )
-
-    class Meta:
-        verbose_name = 'Ubicación'
-        verbose_name_plural = 'Ubicaciones'
-
-    def __str__(self):
-        return f"{self.name} - {self.city}"
-
-
 class Points(models.Model):
     ACTION_CHOICES = [
         ('TASK_COMPLETED', 'Tarea Completada'),

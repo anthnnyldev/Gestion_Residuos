@@ -41,4 +41,7 @@ urlpatterns = [
     path('rewards/create/', home.RewardCreateView.as_view(), name='reward_create'),
     path('rewards/<int:pk>/edit/', home.RewardUpdateView.as_view(), name='reward_edit'),
     path('rewards/<int:pk>/delete/', home.RewardDeleteView.as_view(), name='reward_delete'),
+
+    path("redeem/<int:pk>/confirm/", home.RedeemRewardConfirmationView.as_view(), name="redeem_confirm"),
+    path("redeem/<int:pk>/", home.RedeemRewardView.as_view(), name="redeem"),
 ]

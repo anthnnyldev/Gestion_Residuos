@@ -1,0 +1,20 @@
+{% extends "components/base_dash.html" %}
+
+{% block content %}
+<div class="container mx-auto py-8 px-4">
+    <h1 class="text-3xl font-semibold text-white mb-4">Confirmar Canje</h1>
+    <div class="bg-gray-700 p-6 rounded-lg shadow-lg">
+        <p class="text-lg text-gray-300 mb-2">Estás a punto de canjear el premio <strong class="text-teal-400">{{ reward.name }}</strong>.</p>
+        <p class="text-md text-gray-400 mb-4">Descripción: {{ reward.description }}</p>
+        <p class="text-md text-gray-300 mb-4">Puntos requeridos: <span class="text-yellow-400">{{ reward.points_required }}</span></p>
+
+        <div class="flex justify-between">
+            <form method="post" action="{% url 'dashboard:redeem' reward.id %}" class="flex space-x-4">
+                {% csrf_token %}
+                <button type="submit" class="bg-teal-500 text-white px-6 py-2 rounded-lg hover:bg-teal-400 focus:outline-none">Confirmar</button>
+            </form>
+            <a href="{% url 'dashboard:rewards_list' %}" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-500 focus:outline-none">Cancelar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
