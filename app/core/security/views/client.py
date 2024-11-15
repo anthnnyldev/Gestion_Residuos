@@ -40,3 +40,5 @@ class ClientListView(ListView):
             messages.error(request, 'Hubo un error al intentar cambiar el rol del usuario.')
 
         return redirect(reverse('security:client_list'))
+    
+

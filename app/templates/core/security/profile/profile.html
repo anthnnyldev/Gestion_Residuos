@@ -1,0 +1,27 @@
+{% extends 'components/base.html' %}
+
+{% block title %}Perfil del Usuario{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-white">
+        <h2 class="text-3xl font-bold mb-4">Perfil del Usuario</h2>
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+            <img src="{{ user.profile_image.url }}" alt="Foto de perfil" class="w-32 h-32 rounded-full border-4 border-blue-500">
+            <div>
+                <p><span class="font-semibold">Nombre de usuario:</span> {{ user.username }}</p>
+                <p><span class="font-semibold">Correo electrónico:</span> {{ user.email }}</p>
+                <p><span class="font-semibold">Fecha de nacimiento:</span> {{ user.date_of_birth }}</p>
+                <p><span class="font-semibold">Teléfono:</span> {{ user.phone_number }}</p>
+                <p><span class="font-semibold">Dirección:</span> {{ user.address }}</p>
+                <p><span class="font-semibold">Género:</span> {{ user.gender }}</p>
+                <div class="mt-4">
+                    <a href="{% url 'security:edit_profile' %}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                        Editar Perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
