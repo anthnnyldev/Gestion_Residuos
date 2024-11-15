@@ -1,6 +1,13 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
+import os
+
+
+def validate_image_extension(value):
+    ext = os.path.splitext(value.name)[1].lower()
+    if ext not in ['.jpg', '.jpeg']:
+        raise ValidationError("Solo se permiten imágenes con formato .jpg o .jpeg.")
 
 
 class Units(models.Model):
@@ -8,76 +15,86 @@ class Units(models.Model):
     abbreviation = models.CharField(max_length=10, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="created_units")
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="updated_units")
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_units"
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="updated_units"
+    )
     
     class Meta:
         verbose_name = 'Unidad'
         verbose_name_plural = 'Unidades'
     
     def __str__(self):
-        return f"{self.description}, {self.created_at} {self.updated_at}"
+        return f"{self.name} ({self.abbreviation})"
     
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.created_by = kwargs.pop('user', None)
-        self.updated_by = kwargs.pop('user', None)
-        super().save(*args, **kwargs)
-
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="created_categories")
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="updated_categories")
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_categories"
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="updated_categories"
+    )
     
     class Meta:
         verbose_name = 'Categoría'
         verbose_name_plural = 'Categorías'
     
     def __str__(self):
-        return f"{self.name}"
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.created_by = kwargs.pop('user', None)
-        self.updated_by = kwargs.pop('user', None)
-        super().save(*args, **kwargs)
+        return self.name
 
 
 class Product(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField()
-    image = models.ImageField(upload_to='products/')
+    image = models.ImageField(upload_to='products/', validators=[validate_image_extension])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     units = models.ForeignKey(Units, on_delete=models.CASCADE, related_name="products")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products")
     is_active = models.BooleanField(default=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="created_products")
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="updated_products")
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_products"
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="updated_products"
+    )
 
     class Meta:
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
     
     def __str__(self):
-        return f"{self.description}, {self.image} {self.created_at}, {self.updated_at}"
-
-    def hide(self):
-        self.is_active = False
-        self.save()
-
-    def show(self):
-        self.is_active = True
-        self.save()
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.created_by = kwargs.pop('user', None)
-        self.updated_by = kwargs.pop('user', None)
-        super().save(*args, **kwargs)
+        return self.name
 
 
 class Location(models.Model):
@@ -88,47 +105,55 @@ class Location(models.Model):
     contact_phone = models.CharField(max_length=20, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="created_locations")
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="updated_locations")
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_locations"
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="updated_locations"
+    )
 
     class Meta:
         verbose_name = 'Ubicación'
         verbose_name_plural = 'Ubicaciones'
 
     def __str__(self):
-        return f"{self.name}, {self.address}, {self.city}"
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.created_by = kwargs.pop('user', None)
-        self.updated_by = kwargs.pop('user', None)
-        super().save(*args, **kwargs)
+        return f"{self.name} - {self.city}"
 
 
 class Points(models.Model):
-    number = models.PositiveIntegerField()
+    ACTION_CHOICES = [
+        ('TASK_COMPLETED', 'Tarea Completada'),
+        ('PRODUCT_REQUEST', 'Solicitud de Producto'),
+        ('PURCHASE', 'Compra Realizada'),
+        ('PENALTY', 'Penalización'),
+    ]
+
+    number = models.PositiveIntegerField()  # Puntos otorgados (pueden ser negativos también si es una penalización)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="points")
-    created_at= models.DateTimeField(auto_now_add=True)
-    reason = models.CharField(max_length=255, blank=True, null=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="created_points")
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="updated_points")
+    action_type = models.CharField(max_length=50, choices=ACTION_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_points"
+    )
 
     class Meta:
         verbose_name = 'Punto'
         verbose_name_plural = 'Puntos'
 
-    def clean(self):
-        if self.number < 0:
-            raise ValidationError("El número de puntos no puede ser negativo.")
-    
     def __str__(self):
-        return f"{self.number} puntos para {self.user}"
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.created_by = kwargs.pop('user', None)
-        self.updated_by = kwargs.pop('user', None)
-        super().save(*args, **kwargs)
+        return f"{self.number} puntos para {self.user} por {self.get_action_type_display()}"
 
 
 class PointHistory(models.Model):
@@ -136,18 +161,83 @@ class PointHistory(models.Model):
     points = models.PositiveIntegerField()
     action = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="created_point_histories")
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="updated_point_histories")
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_point_histories"
+    )
 
     class Meta:
         verbose_name = 'Historial de Puntos'
         verbose_name_plural = 'Historial de Puntos'
 
     def __str__(self):
-        return f"{self.points} puntos para {self.user} - {self.action}"
+        return f"{self.points} puntos - {self.action}"
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.created_by = kwargs.pop('user', None)
-        self.updated_by = kwargs.pop('user', None)
-        super().save(*args, **kwargs)
+
+class ProductRequest(models.Model):
+    STATUS_CHOICES = [
+        ('PENDING', 'Pendiente'),
+        ('APPROVED', 'Aprobada'),
+        ('DENIED', 'Denegada'),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name="product_requests"
+    )
+    product = models.ForeignKey(
+        Product, 
+        on_delete=models.CASCADE, 
+        related_name="requests"
+    )
+    status = models.CharField(
+        max_length=10, 
+        choices=STATUS_CHOICES, 
+        default='PENDING'
+    )
+    points_assigned = models.PositiveIntegerField(default=0, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name="reviewed_requests"
+    )
+
+    class Meta:
+        verbose_name = 'Solicitud de Producto'
+        verbose_name_plural = 'Solicitudes de Producto'
+
+    def __str__(self):
+        return f"Solicitud de {self.user} para {self.product} - {self.get_status_display()}"
+
+    def approve(self, admin_user, points):
+        self.status = 'APPROVED'
+        self.reviewed_by = admin_user
+        self.points_assigned = points
+        self.save()
+
+        PointHistory.objects.create(
+            user=self.user,
+            points=points,
+            action=f"Producto gestionado: {self.product.name}",
+            created_by=admin_user
+        )
+
+        Points.objects.create(
+            user=self.user,
+            number=points,
+            action_type='PRODUCT_REQUEST',
+            created_by=admin_user
+        )
+
+    def deny(self, admin_user):
+        self.status = 'DENIED'
+        self.reviewed_by = admin_user
+        self.save()

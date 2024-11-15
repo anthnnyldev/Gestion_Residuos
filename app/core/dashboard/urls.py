@@ -1,5 +1,5 @@
 from django.urls import path
-from core.dashboard.views import home, category, units, product
+from core.dashboard.views import home, category, units, product, point
 
 app_name = "dashboard"
 
@@ -26,4 +26,10 @@ urlpatterns = [
     path('products/<int:pk>/edit/', product.ProductUpdateView.as_view(), name='product_update'),
     path('products/<int:pk>/delete/', product.ProductDeleteView.as_view(), name='product_delete'),
     path('products/<int:pk>/toggle-status/', product.ProductToggleStatusView.as_view(), name='product_toggle_status'),
+    path('product/request/<int:product_id>/', home.ProductRequestCreateView.as_view(), name='request_product'),
+
+
+    #REQUEST PRODUCT
+    path('product-requests/', point.ProductRequestListView.as_view(), name='product_requests_list'),
+    path('product-requests/action/<int:pk>/', point.ProductRequestActionView.as_view(), name='product_request_action'),
 ]

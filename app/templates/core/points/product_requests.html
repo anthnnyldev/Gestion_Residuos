@@ -1,0 +1,67 @@
+{% extends 'components/base_dash.html' %}
+
+{% block title %}Lista de Solicitudes de Producto{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold mb-6">Lista de Solicitudes de Producto</h2>
+
+        <div class="mb-4">
+            <form method="get" action="{% url 'dashboard:product_requests_list' %}" class="flex items-center">
+                <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Buscar solicitudes..." class="form-input px-4 py-2 rounded-md w-full border border-gray-600">
+                <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    Buscar
+                </button>
+            </form>
+        </div>
+
+        <table class="min-w-full bg-gray-800 text-white rounded-md shadow-md">
+            <thead>
+                <tr>
+                    <th class="py-3 px-6 text-left">Producto</th>
+                    <th class="py-3 px-6 text-left">Usuario</th>
+                    <th class="py-3 px-6 text-left">Fecha de Solicitud</th>
+                    <th class="py-3 px-6 text-left">Estado</th>
+                    <th class="py-3 px-6 text-left">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                    <tr class="border-b border-gray-700">
+                        <td class="py-3 px-6">{{ request.product.name }}</td>
+                        <td class="py-3 px-6">{{ request.user.username }}</td>
+                        <td class="py-3 px-6">{{ request.created_at }}</td>
+                        <td class="py-3 px-6">
+                            <span class="px-3 py-1 rounded-full 
+                                {% if request.status == 'PENDING' %} bg-yellow-500 text-white {% endif %}
+                                {% if request.status == 'APPROVED' %} bg-green-500 text-white {% endif %}
+                                {% if request.status == 'DENIED' %} bg-red-500 text-white {% endif %}">
+                                {{ request.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-6">
+                            {% if user.is_superuser %}
+                                <form method="post" action="{% url 'dashboard:product_request_action' request.id %}" class="inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit" name="action" value="approve" class="text-green-500 hover:text-green-600 mr-4">
+                                        Aprobar
+                                    </button>
+                                    <button type="submit" name="action" value="deny" class="text-red-500 hover:text-red-600">
+                                        Denegar
+                                    </button>
+                                    <input type="number" name="points" value="0" min="0" class="ml-2 p-1 border border-gray-600 rounded-md w-16">
+                                </form>
+                            {% else %}
+                                No disponible
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-3 px-6 text-center">No hay solicitudes disponibles</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'components/base_dash.html' %}
+
+{% block title %}Gestionar Solicitud de Producto{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold mb-6">Solicitud de Producto: {{ product.name }}</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="product" class="block text-sm font-semibold text-gray-700">Producto</label>
+                <input type="text" id="product" value="{{ product.name }}" class="w-full p-2 bg-gray-800 text-white border border-gray-600 rounded-md" disabled>
+            </div>
+
+            <div class="mb-4">
+                <label for="comments" class="block text-sm font-semibold text-gray-700">Comentarios (opcional)</label>
+                <textarea id="comments" name="comments" class="w-full p-2 bg-gray-800 text-white border border-gray-600 rounded-md"></textarea>
+            </div>
+
+            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Crear Solicitud</button>
+        </form>
+    </div>
+{% endblock %}

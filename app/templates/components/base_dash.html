@@ -21,10 +21,11 @@
                 <li><a href="{% url 'dashboard:unit_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-package mr-2"></i>Unidades</a></li>
                 <li><a href="{% url 'dashboard:product_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-cube mr-2"></i>Productos</a></li>
                 <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-location-plus mr-2"></i>Ubicaciones</a></li>
-                <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-dollar-circle mr-2"></i>Puntos</a></li>
+                <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-user mr-2"></i>Clientes</a></li>
+                <li><a href="{% url 'dashboard:product_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-dollar-circle mr-2"></i>Solicitudes</a></li>
                 <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-history mr-2"></i>Historial de Puntos</a></li>
             {% else %}
-                <li><a href="{% url 'dashboard:product_view' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-list-ul mr-2"></i>Ver Productos</a></li>
+                <li><a href="{% url 'dashboard:product_requests_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-list-ul mr-2"></i>Ver Productos</a></li>
                 <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-cart mr-2"></i>Solicitar Gestionar Producto</a></li>
                 <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-history mr-2"></i>Mi Historial de Puntos</a></li>
             {% endif %}
