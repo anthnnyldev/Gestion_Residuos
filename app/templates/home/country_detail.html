@@ -19,28 +19,28 @@
         <!-- Sección de Gráficos -->
         <section class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
             
-            <!-- Gráfico: Composición de Residuos (Pastel) -->
+            <!-- Gráfico 3D de Composición de Residuos -->
             <div class="bg-white p-6 rounded-xl shadow-lg">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Composición de Residuos</h2>
                 <p class="text-sm text-gray-600 mb-2">Distribución porcentual de tipos de residuos generados en el país.</p>
                 <div id="compositionPieChart"></div>
             </div>
             
-            <!-- Gráfico: Tratamiento de Residuos (Barras) -->
+            <!-- Gráfico 3D de Tratamiento de Residuos -->
             <div class="bg-white p-6 rounded-xl shadow-lg">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Tratamiento de Residuos</h2>
                 <p class="text-sm text-gray-600 mb-2">Porcentaje de residuos tratados mediante diferentes métodos.</p>
                 <div id="treatmentBarChart"></div>
             </div>
             
-            <!-- Gráfico: Cobertura de Recolección (Barras) -->
+            <!-- Gráfico 3D de Cobertura de Recolección -->
             <div class="bg-white p-6 rounded-xl shadow-lg">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Cobertura de Recolección</h2>
                 <p class="text-sm text-gray-600 mb-2">Cobertura de recolección en zonas rurales y urbanas.</p>
                 <div id="collectionCoverageBarChart"></div>
             </div>
             
-            <!-- Gráfico: Generación de Residuos Especiales (Barras) -->
+            <!-- Gráfico 3D de Generación de Residuos Especiales -->
             <div class="bg-white p-6 rounded-xl shadow-lg">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Generación de Residuos Especiales</h2>
                 <p class="text-sm text-gray-600 mb-2">Cantidad de residuos especiales generados anualmente.</p>
@@ -49,115 +49,74 @@
         </section>
     </div>
 </div>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="https://d3js.org/d3.v6.min.js"></script>
 
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const data = {{ country_data|safe }};
         
-        // Gráfico de Pastel: Composición de Residuos
-        renderPieChart('#compositionPieChart', [
-            { label: 'Orgánicos', value: data.food_waste },
-            { label: 'Plástico', value: data.plastic_waste },
-            { label: 'Papel', value: data.paper_waste },
-            { label: 'Metales', value: data.metal_waste },
-        ]);
+        // Gráfico de Pastel 3D: Composición de Residuos
+        Plotly.newPlot('compositionPieChart', [{
+            values: [data.food_waste, data.plastic_waste, data.paper_waste, data.metal_waste],
+            labels: ['Orgánicos', 'Plástico', 'Papel', 'Metales'],
+            type: 'pie',
+            hole: 0.3,
+            textinfo: 'label+percent',
+            hoverinfo: 'label+percent+value',
+            pull: [0.1, 0, 0, 0],
+            marker: { colors: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'] }
+        }], {
+            title: 'Composición de Residuos',
+            height: 400,
+            width: 500,
+            showlegend: true
+        });
 
-        // Gráfico de Barras: Tratamiento de Residuos
-        renderBarChart('#treatmentBarChart', [
-            { label: 'Reciclaje', value: data.waste_treatment_recycling },
-            { label: 'Incineración', value: data.waste_treatment_incineration },
-            { label: 'Relleno Sanitario', value: data.waste_treatment_landfill },
-        ]);
+        // Gráfico de Barras 3D: Tratamiento de Residuos
+        Plotly.newPlot('treatmentBarChart', [{
+            x: ['Reciclaje', 'Incineración', 'Relleno Sanitario'],
+            y: [data.waste_treatment_recycling, data.waste_treatment_incineration, data.waste_treatment_landfill],
+            type: 'bar',
+            marker: { color: '#17becf' },
+            text: [data.waste_treatment_recycling + '%', data.waste_treatment_incineration + '%', data.waste_treatment_landfill + '%'],
+            textposition: 'auto',
+            hoverinfo: 'text'
+        }], {
+            title: 'Tratamiento de Residuos',
+            height: 400,
+            width: 500
+        });
 
-        // Gráfico de Barras: Cobertura de Recolección
-        renderBarChart('#collectionCoverageBarChart', [
-            { label: 'Rural', value: data.waste_collection_rural },
-            { label: 'Urbano', value: data.waste_collection_urban },
-        ]);
+        // Gráfico de Barras 3D: Cobertura de Recolección
+        Plotly.newPlot('collectionCoverageBarChart', [{
+            x: ['Rural', 'Urbano'],
+            y: [data.waste_collection_rural, data.waste_collection_urban],
+            type: 'bar',
+            marker: { color: '#bcbd22' },
+            text: [data.waste_collection_rural + '%', data.waste_collection_urban + '%'],
+            textposition: 'auto',
+            hoverinfo: 'text'
+        }], {
+            title: 'Cobertura de Recolección',
+            height: 400,
+            width: 500
+        });
 
-        // Gráfico de Barras: Generación de Residuos Especiales
-        renderBarChart('#specialWasteBarChart', [
-            { label: 'Residuos Electrónicos', value: data.special_waste_electronic },
-            { label: 'Residuos Industriales', value: data.special_waste_industrial },
-            { label: 'Residuos Médicos', value: data.special_waste_medical },
-        ]);
-
-        // Función para Gráfico de Pastel
-        function renderPieChart(container, data) {
-            const width = 200, height = 200, radius = Math.min(width, height) / 2;
-            const svg = d3.select(container).append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", `translate(${width / 2}, ${height / 2})`);
-            const color = d3.scaleOrdinal(d3.schemeCategory10);
-            const pie = d3.pie().value(d => d.value);
-            const arc = d3.arc().innerRadius(0).outerRadius(radius);
-            svg.selectAll("path")
-                .data(pie(data))
-                .enter()
-                .append("path")
-                .attr("d", arc)
-                .attr("fill", d => color(d.data.label));
-        }
-
-        // Función para Gráfico de Barras
-        function renderBarChart(container, data) {
-            const margin = {top: 20, right: 30, bottom: 40, left: 40};
-            const width = 200 - margin.left - margin.right;
-            const height = 200 - margin.top - margin.bottom;
-            const svg = d3.select(container).append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
-            const x = d3.scaleBand().domain(data.map(d => d.label)).range([0, width]).padding(0.1);
-            svg.append("g").call(d3.axisBottom(x)).attr("transform", `translate(0,${height})`);
-            const y = d3.scaleLinear().domain([0, d3.max(data, d => d.value)]).nice().range([height, 0]);
-            svg.append("g").call(d3.axisLeft(y));
-            svg.selectAll(".bar")
-                .data(data)
-                .enter()
-                .append("rect")
-                .attr("class", "bar")
-                .attr("x", d => x(d.label))
-                .attr("y", d => y(d.value))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.value))
-                .attr("fill", "#1f77b4");
-        }
+        // Gráfico de Barras 3D: Generación de Residuos Especiales
+        Plotly.newPlot('specialWasteBarChart', [{
+            x: ['Residuos Electrónicos', 'Residuos Industriales', 'Residuos Médicos'],
+            y: [data.special_waste_electronic, data.special_waste_industrial, data.special_waste_medical],
+            type: 'bar',
+            marker: { color: '#7f7f7f' },
+            text: [data.special_waste_electronic + ' toneladas', data.special_waste_industrial + ' toneladas', data.special_waste_medical + ' toneladas'],
+            textposition: 'auto',
+            hoverinfo: 'text'
+        }], {
+            title: 'Generación de Residuos Especiales',
+            height: 400,
+            width: 500
+        });
     });
 </script>
-
-<!-- country_detail.html -->
-<div id="compositionChart"></div>
-<div id="treatmentChart"></div>
-
-<script>
-// Cargar datos desde el contexto Django
-const countryData = {{ country_data|safe }};
-
-// Gráfico de Pastel para Composición de Residuos
-const compositionData = [
-    { label: "Orgánicos", value: countryData.food_waste },
-    { label: "Plásticos", value: countryData.plastic_waste },
-    { label: "Papel", value: countryData.paper_waste },
-    { label: "Metales", value: countryData.metal_waste }
-];
-renderPieChart("#compositionChart", compositionData);
-
-// Gráfico de Barras para Tratamiento de Residuos
-const treatmentData = [
-    { label: "Reciclaje", value: countryData.waste_treatment_recycling },
-    { label: "Incineración", value: countryData.waste_treatment_incineration },
-    { label: "Relleno Sanitario", value: countryData.waste_treatment_landfill }
-];
-renderBarChart("#treatmentChart", treatmentData);
-
-</script>
-
-
 {% endblock %}
