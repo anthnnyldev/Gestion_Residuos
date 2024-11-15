@@ -7,28 +7,18 @@
     <div class="max-w-7xl mx-auto space-y-8">
 
         <!-- Encabezado -->
-        <header class="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 text-center">
-                Dashboard de Contaminación Global
-            </h1>
-            <p class="text-gray-600 text-center mt-2">
-                Análisis detallado de datos ambientales
-            </p>
+        <header class="bg-white rounded-xl shadow-lg p-6 mb-6 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Dashboard de Contaminación Global</h1>
+            <p class="text-gray-600 mt-2">Análisis detallado de datos ambientales y gestión de residuos por país</p>
         </header>
 
-        <!-- Gráficos con Grid de 2 columnas -->
-        <section class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-            <!-- Mapa de Residuos Orgánicos -->
-            <div class="bg-white p-6 rounded-xl shadow-lg col-span-1 sm:col-span-2">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">
-                    Residuos Orgánicos por País
-                </h2>
-                <div class="relative h-[500px]" id="mapContainer">
-                    <svg id="worldMap" class="w-full h-full"></svg>
-                </div>
+        <!-- Mapa de Residuos Orgánicos -->
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Residuos Orgánicos por País</h2>
+            <div class="relative h-[500px]" id="mapContainer">
+                <svg id="worldMap" class="w-full h-full"></svg>
             </div>
         </section>
-
     </div>
 </div>
 
@@ -37,61 +27,76 @@
     <div id="tooltipContent"></div>
 </div>
 
+<script src="https://d3js.org/d3.v6.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const data = {{ data|safe }}; // Data passed from Django as a JSON object
-    
-    // Map dimensions
+    const data = {{ data|safe }}; // Datos pasados desde Django como un objeto JSON
+
+    // Dimensiones del mapa
     const width = document.getElementById('mapContainer').clientWidth;
     const height = document.getElementById('mapContainer').clientHeight;
 
     const svg = d3.select("#worldMap")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .call(d3.zoom()
+            .scaleExtent([1, 8])  // Zoom mínimo y máximo
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform); // Aplica la transformación de zoom
+            })
+        );
 
-    // Projection and path for the map
-    const projection = d3.geoNaturalEarth1()
-        .scale(width / 6)
-        .translate([width / 2, height / 2]);
+    // Grupo contenedor de los países para aplicar el zoom
+    const g = svg.append("g");
+
+    // Proyección Mercator para simular un mapa de tipo Google Maps
+    const projection = d3.geoMercator()
+        .scale(130)
+        .translate([width / 2, height / 1.5]);
 
     const path = d3.geoPath().projection(projection);
 
-    // Load the world map data (GeoJSON)
-    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(function(geoData) {
-        // Create a color scale for the waste data
-        const colorScale = d3.scaleSequential(d3.interpolateViridis)
-            .domain([0, 100]); // Assuming waste percentage is between 0% and 100%
+    // Escala de color para los datos de residuos
+    const colorScale = d3.scaleSequential(d3.interpolateViridis)
+        .domain([0, 100]);
 
-        // Create map features (countries)
-        svg.selectAll("path")
+    // Cargar datos del mapa mundial (GeoJSON)
+    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(function(geoData) {
+        // Crear países en el mapa
+        g.selectAll("path")
             .data(geoData.features)
             .enter()
             .append("path")
             .attr("d", path)
-            .attr("fill", "#cccccc") // Default color for countries with no data
+            .attr("fill", "#cccccc") // Color por defecto para países sin datos
             .attr("stroke", "#fff")
             .attr("stroke-width", 0.5)
             .attr("class", "country")
             .attr("id", d => d.properties.name)
-            .on("mouseover", function(event, d) {
-                // Show tooltip on hover
+            .on("click", function(event, d) {
+                // Redirigir a la página de detalles del país al hacer clic
                 const countryName = d.properties.name;
-                const wasteData = data[countryName]; // Access the data for the country
+                if (data[countryName]) {
+                    window.location.href = `/country/${countryName.toLowerCase()}`;
+                }
+            })
+            .on("mouseover", function(event, d) {
+                const countryName = d.properties.name;
+                const wasteData = data[countryName];
                 
                 if (wasteData) {
-                    const wastePercentage = wasteData.food_waste; // Get the food waste percentage for the country
+                    const wastePercentage = wasteData.food_waste;
                     const tooltip = document.getElementById('tooltip');
                     tooltip.classList.remove('hidden');
                     tooltip.style.left = (event.pageX + 10) + 'px';
                     tooltip.style.top = (event.pageY - 25) + 'px';
                     document.getElementById('tooltipContent').textContent = `${countryName}: ${wastePercentage.toFixed(1)}% Residuos Orgánicos`;
                     
-                    // Highlight country on hover
+                    // Resaltar el país al pasar el cursor
                     d3.select(this).attr("fill", colorScale(wastePercentage));
                 }
             })
             .on("mouseout", function() {
-                // Hide tooltip and reset country color
                 document.getElementById('tooltip').classList.add('hidden');
                 d3.select(this).attr("fill", function(d) {
                     const countryName = d.properties.name;
@@ -100,15 +105,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-        // Set color based on food waste data
-        svg.selectAll("path")
+        // Colorear países con datos de residuos de alimentos
+        g.selectAll("path")
             .attr("fill", function(d) {
                 const countryName = d.properties.name;
                 const wasteData = data[countryName];
-                return wasteData ? colorScale(wasteData.food_waste) : "#cccccc"; // Default color
+                return wasteData ? colorScale(wasteData.food_waste) : "#cccccc";
             });
     });
-
 });
 </script>
 
