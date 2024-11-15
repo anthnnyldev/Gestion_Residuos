@@ -1,0 +1,60 @@
+{% extends 'components/base_dash.html' %}
+
+{% block title %}Lista de Unidades{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold mb-6">Lista de Unidades</h2>
+        
+        <!-- Search Form -->
+        <div class="mb-4">
+            <form method="get" action="{% url 'dashboard:unit_list' %}" class="flex items-center">
+                <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Buscar unidades..." class="form-input px-4 py-2 rounded-md w-full border border-gray-600">
+                <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    Buscar
+                </button>
+            </form>
+        </div>
+
+        <!-- Create Unit Button -->
+        <div class="mt-6 mb-6">
+            <a href="{% url 'dashboard:unit_create' %}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Crear nueva unidad</a>
+        </div>
+
+        <!-- Units Table -->
+        <table class="min-w-full bg-gray-800 text-white rounded-md shadow-md">
+            <thead>
+                <tr>
+                    <th class="py-3 px-6 text-left">Nombre</th>
+                    <th class="py-3 px-6 text-left">Abreviatura</th>
+                    <th class="py-3 px-6 text-left">Fecha de Creación</th>
+                    <th class="py-3 px-6 text-left">Última Actualización</th>
+                    <th class="py-3 px-6 text-left">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for unit in units %}
+                    <tr class="border-b border-gray-700">
+                        <td class="py-3 px-6">{{ unit.name }}</td>
+                        <td class="py-3 px-6">{{ unit.abbreviation }}</td>
+                        <td class="py-3 px-6">{{ unit.created_at }}</td>
+                        <td class="py-3 px-6">{{ unit.updated_at }}</td>
+                        <td class="py-3 px-6">
+                            <!-- Edit and Delete actions with icons -->
+                            <a href="{% url 'dashboard:unit_edit' unit.id %}" class="text-yellow-400 hover:text-yellow-500 mr-4">
+                                <i class="bx bx-edit-alt"></i> Editar
+                            </a>
+                            <a href="{% url 'dashboard:unit_delete' unit.id %}" class="text-red-500 hover:text-red-600">
+                                <i class="bx bx-trash"></i> Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-3 px-6 text-center">No hay unidades disponibles</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

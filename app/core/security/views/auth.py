@@ -1,43 +1,48 @@
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import FormView, TemplateView
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout
+from django.views.generic import CreateView, FormView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.shortcuts import redirect
-from django.contrib.auth.models import User
+from core.security.models import User
+from core.security.forms.authform import RegisterForm, LoginForm
+
+class RegisterView(CreateView):
+    model = User
+    form_class = RegisterForm
+    template_name = 'core/security/auth/register.html'
+    success_url = reverse_lazy('security:login')
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data['password1'])
+        user.save()
+        messages.success(self.request, "¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.")
+        return redirect(self.success_url)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Hubo un error al registrar la cuenta. Por favor, revisa los campos.")
+        return super().form_invalid(form)
 
 class LoginView(FormView):
-    template_name = 'core/security/login.html'
-    form_class = AuthenticationForm
-    success_url = reverse_lazy('home:home')  # Change 'home' to the URL name of your homepage or dashboard
+    form_class = LoginForm
+    template_name = 'core/security/auth/login.html'
+    success_url = reverse_lazy('home:home')
 
     def form_valid(self, form):
-        # Authenticate and log the user in
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password')
-        user = authenticate(self.request, username=username, password=password)
+        user = form.cleaned_data['user']
 
-        if user is not None:
+        if user.is_authenticated:
             login(self.request, user)
-            messages.success(self.request, "Has iniciado sesión con éxito.")
-            return super().form_valid(form)
-        else:
-            form.add_error(None, "El nombre de usuario o la contraseña no son correctos.")
-            return self.form_invalid(form)
+            messages.success(self.request, "¡Bienvenido de nuevo!")
+            return redirect(self.success_url)
+        
+        messages.error(self.request, "Nombre de usuario o contraseña incorrectos.")
+        return self.form_invalid(form)
 
-class RegisterView(FormView):
-    template_name = 'core/security/register.html'
-    form_class = UserCreationForm
-    success_url = reverse_lazy('security:login')  # Redirect to login page after successful registration
-
-    def form_valid(self, form):
-        # Create the user
-        user = form.save(commit=False)
-        user.first_name = self.request.POST.get('first_name', '')
-        user.last_name = self.request.POST.get('last_name', '')
-        user.email = self.request.POST.get('email', '')
-        user.save()
-
-        messages.success(self.request, "Cuenta creada exitosamente. Ahora puedes iniciar sesión.")
-        return super().form_valid(form)
+    def form_invalid(self, form):
+        messages.error(self.request, "Nombre de usuario o contraseña incorrectos.")
+        return super().form_invalid(form)
+    
+def user_logout(request):
+    logout(request)
+    return redirect('security:login')

@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel de Control{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="bg-gray-900 text-white flex">
+
+    <!-- Menú lateral -->
+    <aside id="sidebar" class="bg-gray-800 w-52 min-h-screen p-4 fixed md:relative transform md:translate-x-0 flex flex-col">
+        <a href="{% url 'dashboard:home' %}" class="text-xl font-bold mb-12 pt-4 block">
+            Panel de Control
+        </a>
+        <ul class="space-y-6 flex-grow">
+            {% if request.user.is_superuser %}
+                <li><a href="{% url 'dashboard:category_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-category-alt mr-2"></i>Categorías</a></li>
+                <li><a href="{% url 'dashboard:unit_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-package mr-2"></i>Unidades</a></li>
+                <li><a href="{% url 'dashboard:product_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-cube mr-2"></i>Productos</a></li>
+                <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-location-plus mr-2"></i>Ubicaciones</a></li>
+                <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-dollar-circle mr-2"></i>Puntos</a></li>
+                <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-history mr-2"></i>Historial de Puntos</a></li>
+            {% else %}
+                <li><a href="{% url 'dashboard:product_view' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-list-ul mr-2"></i>Ver Productos</a></li>
+                <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-cart mr-2"></i>Solicitar Gestionar Producto</a></li>
+                <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-history mr-2"></i>Mi Historial de Puntos</a></li>
+            {% endif %}
+        </ul>
+
+        <!-- Enlaces al final -->
+        <ul class="mt-auto space-y-4">
+            <li><a href="{% url 'home:home' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-home mr-2"></i> Volver al inicio</a></li>
+            <li><a href="{% url 'security:logout' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-log-out mr-2"></i>Cerrar Sesión</a></li>
+        </ul>
+    </aside>
+
+    <!-- Contenido principal -->
+    <div class="flex-1 ml-64 md:ml-0">
+        <main class="p-6 md:p-8">
+            {% block content %}
+            <!-- Contenido específico de cada vista se incluirá aquí -->
+            {% endblock %}
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/dashboard_charts.js' %}"></script>
+</body>
+</html>

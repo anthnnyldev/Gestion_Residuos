@@ -22,11 +22,31 @@
                 <a href="{% url 'home:tutorial' %}" class="text-white hover:text-gray-300 px-4">Tutorial</a>
                 <a href="{% url 'home:about' %}" class="text-white hover:text-gray-300 px-4">Sobre Nosotros</a>
                 <a href="{% url 'home:contacto' %}" class="text-white hover:text-gray-300 px-4">Contacto</a>
+
+                {% if user.is_authenticated %}
+                <!-- Dropdown para usuario logueado -->
+                <div class="relative">
+                    <button class="bg-white text-sky-600 font-semibold px-4 py-2 rounded-full hover:bg-gray-200 transition-all flex items-center gap-2">
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" alt="Imagen de Perfil" class="w-8 h-8 rounded-full">
+                        {% else %}
+                            <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-white">U</div>
+                        {% endif %}
+                        <i class="bx bx-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-content absolute right-0 bg-white shadow-lg rounded-lg mt-2 w-48 py-2 hidden">
+                        <a href="{% url 'dashboard:home' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Reclamar</a>
+                        <a href="{% url 'security:logout' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Cerrar Sesión</a>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Enlace para login si no está logueado -->
                 <a href="{% url 'security:login' %}" class="bg-white text-sky-600 font-semibold px-4 py-2 rounded-full hover:bg-gray-200 transition-all">Login</a>
+                {% endif %}
             </div>
         </div>
     </nav>
-
 
     <main class="container mx-auto flex-1">
         {% block content %}
@@ -54,7 +74,9 @@
         </div>
     </footer>
 
-    
+    <!-- Cargar dropdown -->
+    <script src="{% static 'js/dropdown.js' %}"></script>
+
     <!-- Cargar la librería D3.js -->
     <script src="{% static 'js/d3.v7.js' %}"></script>
     <script src="{% static 'js/d3.v7.min.js' %}"></script>

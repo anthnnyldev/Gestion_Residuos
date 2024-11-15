@@ -1,49 +1,54 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.urls import reverse
-from django.contrib.auth import login, authenticate
+from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate
+from core.security.models import User
 
-def register_view(request):
-    if request.method == 'POST':
-        # Get form data
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+class RegisterForm(UserCreationForm):
+    phone_number = forms.CharField(max_length=10, required=False, label="Número de teléfono")
+    address = forms.CharField(max_length=255, required=False, label="Dirección")
+    date_of_birth = forms.DateField(required=False, label="Fecha de nacimiento")
+    profile_image = forms.ImageField(required=False, label="Imagen de perfil")
 
-        # Check if username or email already exists
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2', 'phone_number', 'address', 'date_of_birth', 'profile_image']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Este correo electrónico ya está en uso.")
+        return email
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
         if User.objects.filter(username=username).exists():
-            messages.error(request, "El nombre de usuario ya está en uso.")
-            return redirect('security:register')
-        elif User.objects.filter(email=email).exists():
-            messages.error(request, "El correo electrónico ya está en uso.")
-            return redirect('security:register')
+            raise ValidationError("Este nombre de usuario ya está en uso.")
+        return username
 
-        # Create the new user
-        try:
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password,
-                first_name=first_name,
-                last_name=last_name
-            )
-            user.save()
+class LoginForm(forms.Form):
+    username = forms.CharField(label="Nombre de usuario", max_length=150)
+    password = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
 
-            # Authenticate and log the user in after registration
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')  # Replace 'home' with your home view name
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get("username")
+        password = cleaned_data.get("password")
 
-            messages.success(request, "Cuenta creada exitosamente.")
-            return redirect(reverse('security:login'))
+        # Agregar depuración aquí
+        print("Verificando usuario:", username)  # Imprime el nombre de usuario recibido
+        print("Contraseña proporcionada:", password)  # Imprime la contraseña proporcionada
 
-        except ValidationError as e:
-            messages.error(request, f"Error en el formulario: {e}")
-            return redirect('security:register')
+        if not username or not password:
+            raise forms.ValidationError("Este campo es obligatorio.")
 
-    return render(request, 'register.html')
+        # Verificación de autenticación
+        user = authenticate(username=username, password=password)
+
+        # Depuración del resultado de autenticación
+        if user is None:
+            print("Autenticación fallida para:", username)  # Si el usuario es None, imprime el fallo
+            raise forms.ValidationError("Nombre de usuario o contraseña incorrectos.")
+
+        cleaned_data["user"] = user
+        return cleaned_data

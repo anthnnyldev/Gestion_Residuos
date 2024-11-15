@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #APPS
     'core.security',
-    'core.home'
+    'core.home',
+    'core.dashboard',
 ]
 
 MIDDLEWARE = [
@@ -42,7 +43,7 @@ MIDDLEWARE = [
 
 LOGIN_URL = '/security/auth/login/'
 LOGIN_REDIRECT_URL = '/'
-#AUTH_USER_MODEL = 'security.FinalUser'
+AUTH_USER_MODEL = 'security.User'
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [

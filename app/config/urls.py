@@ -7,4 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.home.urls', namespace='home')),
     path('security/', include('core.security.urls', namespace='security')), 
+    path('dashboard/', include('core.dashboard.urls', namespace='dashboard')), 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

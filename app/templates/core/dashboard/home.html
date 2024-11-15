@@ -1,0 +1,33 @@
+{% extends 'components/base_dash.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto">
+    <h2 class="text-2xl font-bold mb-6">Resumen de Puntos</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Gráfico de puntos acumulados en el tiempo -->
+        <div class="bg-gray-800 p-4 rounded-lg shadow-md flex flex-col" style="height: 350px;">
+            <h3 class="text-lg font-semibold mb-2">Puntos acumulados</h3>
+            <canvas id="pointsHistoryChart" class="flex-1"></canvas>
+        </div>
+
+        <div class="bg-gray-800 p-4 rounded-lg shadow-md flex flex-col" style="height: 350px;">
+            <h3 class="text-lg font-semibold mb-2">Comparación de Puntos</h3>
+            <canvas id="pointsComparisonChart" class="flex-1"></canvas>
+        </div>
+
+        <div class="bg-gray-800 p-4 rounded-lg shadow-md flex flex-col" style="height: 350px;">
+            <h3 class="text-lg font-semibold mb-2">Distribución de Puntos por Mes</h3>
+            <canvas id="pointsMonthlyDistributionChart" class="flex-1"></canvas>
+        </div>
+
+        <div class="bg-gray-800 p-4 rounded-lg shadow-md flex flex-col" style="height: 800px;">
+            <h3 class="text-lg font-semibold mb-2">Puntos por Categoría</h3>
+            <canvas id="pointsCategoryChart" class="flex-1"></canvas>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

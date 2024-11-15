@@ -1,0 +1,34 @@
+{% extends 'components/base_dash.html' %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-2">
+        <h2 class="text-2xl font-bold mb-6">Lista de Productos</h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for product in products %}
+                <div class="bg-gray-800 p-4 rounded-lg shadow-md">
+                    <img src="{{ product.image.url }}" alt="{{ product.description }}" class="w-full h-48 object-cover rounded-md mb-4">
+                    <h3 class="text-xl font-semibold text-white">{{ product.name }}</h3> <!-- Agregado el name -->
+                    <p class="text-gray-400 mt-2">Unidad: {{ product.units.name }}</p>
+                    <p class="text-gray-400">Categoría: {{ product.category.name }}</p>
+                    <p class="text-gray-400">{{ product.created_at }}</p>
+
+                    <!-- Usando truncatewords para limitar la descripción a 50 palabras -->
+                    <p class="text-gray-400 mt-2 truncate">
+                        {{ product.description|truncatewords:50 }}
+                    </p>
+
+                    <div class="mt-4">
+                        <a href="#" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+                            Gestionar Residuos
+                        </a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center text-white">No hay productos disponibles</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

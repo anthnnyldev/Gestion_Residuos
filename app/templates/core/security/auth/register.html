@@ -1,0 +1,147 @@
+{% extends 'components/base.html' %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-8 mx-4">
+        <h2 class="text-2xl font-bold text-center text-sky-600 mb-6">Crea tu cuenta</h2>
+
+        <form action="{% url 'security:register' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            
+            <!-- Campo Username -->
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 font-semibold mb-2">Nombre de Usuario</label>
+                <input type="text" id="username" name="username" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600"
+                       placeholder="Ingresa tu nombre de usuario" 
+                       value="{{ form.username.value|default:'' }}" required>
+                {% if form.username.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <!-- Campo Email -->
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-semibold mb-2">Correo Electrónico</label>
+                <input type="email" id="email" name="email" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600"
+                       placeholder="Ingresa tu correo electrónico" 
+                       value="{{ form.email.value|default:'' }}" required>
+                {% if form.email.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.email.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <!-- Campo Contraseña -->
+            <div class="mb-4">
+                <label for="password1" class="block text-gray-700 font-semibold mb-2">Contraseña</label>
+                <input type="password" id="password1" name="password1" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600"
+                       placeholder="Ingresa una contraseña" required>
+                {% if form.password1.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.password1.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <!-- Campo Confirmar Contraseña -->
+            <div class="mb-4">
+                <label for="password2" class="block text-gray-700 font-semibold mb-2">Confirmar Contraseña</label>
+                <input type="password" id="password2" name="password2" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600"
+                       placeholder="Confirma tu contraseña" required>
+                {% if form.password2.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.password2.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <!-- Campo Teléfono -->
+            <div class="mb-4">
+                <label for="phone_number" class="block text-gray-700 font-semibold mb-2">Número de Teléfono</label>
+                <input type="text" id="phone_number" name="phone_number" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600"
+                       placeholder="Ingresa tu número de teléfono" 
+                       value="{{ form.phone_number.value|default:'' }}">
+                {% if form.phone_number.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.phone_number.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <!-- Campo Dirección -->
+            <div class="mb-4">
+                <label for="address" class="block text-gray-700 font-semibold mb-2">Dirección</label>
+                <input type="text" id="address" name="address" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600"
+                       placeholder="Ingresa tu dirección" 
+                       value="{{ form.address.value|default:'' }}">
+                {% if form.address.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.address.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <!-- Campo Fecha de Nacimiento -->
+            <div class="mb-4">
+                <label for="date_of_birth" class="block text-gray-700 font-semibold mb-2">Fecha de Nacimiento</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600"
+                       value="{{ form.date_of_birth.value|default:'' }}">
+                {% if form.date_of_birth.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.date_of_birth.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <!-- Campo Imagen de Perfil -->
+            <div class="mb-4">
+                <label for="profile_image" class="block text-gray-700 font-semibold mb-2">Imagen de Perfil</label>
+                <input type="file" id="profile_image" name="profile_image" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600">
+                {% if form.profile_image.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.profile_image.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <button type="submit" class="w-full bg-sky-600 text-white font-semibold py-3 rounded-lg hover:bg-sky-700 transition-all">
+                Crear Cuenta
+            </button>
+        </form>
+
+        <p class="text-center text-gray-600 mt-4">
+            ¿Ya tienes una cuenta? 
+            <a href="{% url 'security:login' %}" class="text-sky-600 hover:underline">Inicia sesión</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

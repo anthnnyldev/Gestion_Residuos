@@ -1,0 +1,79 @@
+{% extends 'components/base_dash.html' %}
+
+{% block title %}Crear/Editar Producto{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold mb-6">
+            {% if form.instance.pk %}
+                Editar Producto
+            {% else %}
+                Crear Nuevo Producto
+            {% endif %}
+        </h2>
+
+        <form method="post" enctype="multipart/form-data" class="bg-gray-800 p-6 rounded-lg shadow-md">
+            {% csrf_token %}
+
+            <div class="mb-4">
+                <label for="id_name" class="block text-white font-medium mb-2">Nombre del producto</label>
+                <input type="text" name="name" id="id_name" value="{{ form.name.value|default:'' }}" class="form-input px-4 py-2 w-full rounded-md border border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500" placeholder="Nombre del producto" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="id_description" class="block text-white font-medium mb-2">Descripción del producto</label>
+                <textarea name="description" id="id_description" class="form-input px-4 py-2 w-full rounded-md border border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500" placeholder="Descripción del producto" required>{{ form.description.value|default:'' }}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="id_image" class="block text-white font-medium mb-2">Imagen del producto</label>
+                <input type="file" name="image" id="id_image" class="form-input px-4 py-2 w-full rounded-md border border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500">
+                {% if form.instance.pk and form.instance.image %}
+                    <div class="mt-4">
+                        <img src="{{ form.instance.image.url }}" alt="Imagen actual" class="w-32 h-32 object-cover">
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label for="id_units" class="block text-white font-medium mb-2">Unidad de medida</label>
+                <select name="units" id="id_units" class="form-select px-4 py-2 w-full rounded-md border border-gray-600 bg-gray-700 text-white focus:ring-2 focus:ring-blue-500">
+                    <option value="" disabled {% if not form.units.value %}selected{% endif %}>Seleccione la unidad de medida</option>
+                    {% for unit in units %}
+                        <option value="{{ unit.id }}" {% if unit.id == form.units.value %}selected{% endif %}>{{ unit.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="id_category" class="block text-white font-medium mb-2">Categoría</label>
+                <select name="category" id="id_category" class="form-select px-4 py-2 w-full rounded-md border border-gray-600 bg-gray-700 text-white focus:ring-2 focus:ring-blue-500">
+                    <option value="" disabled {% if not form.category.value %}selected{% endif %}>Seleccione la categoría</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id == form.category.value %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="id_is_active" class="block text-white font-medium mb-2">Estado del producto</label>
+                <input type="checkbox" name="is_active" id="id_is_active" {% if form.is_active.value %}checked{% endif %} class="form-checkbox text-blue-500" />
+                <span class="text-white">Activo</span>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <a href="{% url 'dashboard:product_list' %}" class="bg-gray-500 text-white hover:bg-gray-600 py-2 px-4 rounded-md mr-4">
+                    Volver a la lista de productos
+                </a>
+
+                <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">
+                    {% if form.instance.pk %}
+                        Guardar cambios
+                    {% else %}
+                        Crear producto
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

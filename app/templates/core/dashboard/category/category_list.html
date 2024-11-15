@@ -1,0 +1,54 @@
+{% extends 'components/base_dash.html' %}
+
+{% block title %}Lista de Categorías{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold mb-6">Lista de Categorías</h2>
+        <div class="mb-4">
+            <form method="get" action="{% url 'dashboard:category_list' %}" class="flex items-center">
+                <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Buscar categorías..." class="form-input px-4 py-2 rounded-md w-full border border-gray-600">
+                <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    Buscar
+                </button>
+            </form>
+        </div>
+
+        <div class="mt-6 mb-6">
+            <a href="{% url 'dashboard:category_create' %}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Crear nueva categoría</a>
+        </div>
+
+        <table class="min-w-full bg-gray-800 text-white rounded-md shadow-md">
+            <thead>
+                <tr>
+                    <th class="py-3 px-6 text-left">Nombre</th>
+                    <th class="py-3 px-6 text-left">Fecha de Creación</th>
+                    <th class="py-3 px-6 text-left">Última Actualización</th>
+                    <th class="py-3 px-6 text-left">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                    <tr class="border-b border-gray-700">
+                        <td class="py-3 px-6">{{ category.name }}</td>
+                        <td class="py-3 px-6">{{ category.created_at }}</td>
+                        <td class="py-3 px-6">{{ category.updated_at }}</td>
+                        <td class="py-3 px-6">
+                            <!-- Editar y Eliminar con Boxicons -->
+                            <a href="{% url 'dashboard:category_update' category.id %}" class="text-yellow-400 hover:text-yellow-500 mr-4">
+                                <i class="bx bx-edit-alt"></i> Editar
+                            </a>
+                            <a href="{% url 'dashboard:category_delete' category.id %}" class="text-red-500 hover:text-red-600">
+                                <i class="bx bx-trash"></i> Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="py-3 px-6 text-center">No hay categorías disponibles</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

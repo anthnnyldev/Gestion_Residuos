@@ -1,0 +1,43 @@
+{% extends 'components/base_dash.html' %}
+
+{% block title %}Crear/Editar Unidad{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold mb-6">
+            {% if form.instance.pk %}
+                Editar Unidad
+            {% else %}
+                Crear Nueva Unidad
+            {% endif %}
+        </h2>
+
+        <form method="post" class="bg-gray-800 p-6 rounded-lg shadow-md">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <label for="id_name" class="block text-white font-medium mb-2">Nombre de la unidad</label>
+                <input type="text" name="name" id="id_name" value="{{ form.name.value|default:'' }}" class="form-input px-4 py-2 w-full rounded-md border border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500" placeholder="Nombre de la unidad" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="id_abbreviation" class="block text-white font-medium mb-2">Abreviatura de la unidad</label>
+                <input type="text" name="abbreviation" id="id_abbreviation" value="{{ form.abbreviation.value|default:'' }}" class="form-input px-4 py-2 w-full rounded-md border border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500" placeholder="Abreviatura de la unidad" required>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <a href="{% url 'dashboard:unit_list' %}" class="bg-gray-500 text-white hover:bg-gray-600 py-2 px-4 rounded-md mr-4">
+                    Volver a la lista de unidades
+                </a>
+
+                <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">
+                    {% if form.instance.pk %}
+                        Guardar cambios
+                    {% else %}
+                        Crear unidad
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

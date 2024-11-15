@@ -1,0 +1,66 @@
+{% extends 'components/base.html' %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-8 mx-4">
+        <h2 class="text-2xl font-bold text-center text-sky-600 mb-6">Iniciar Sesión</h2>
+
+        <form action="{% url 'security:login' %}" method="POST" class="space-y-4">
+            {% csrf_token %}
+            
+            <!-- Campo Nombre de Usuario -->
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 font-semibold mb-2">Nombre de Usuario</label>
+                <input type="text" id="username" name="username" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600"
+                       placeholder="Ingresa tu nombre de usuario" 
+                       value="{{ form.username.value|default:'' }}" required>
+                {% if form.username.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <!-- Campo Contraseña -->
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-semibold mb-2">Contraseña</label>
+                <input type="password" id="password" name="password" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600"
+                       placeholder="Ingresa tu contraseña" required>
+                {% if form.password.errors %}
+                    <p class="text-red-600 text-sm mt-1">
+                        {% for error in form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        
+            <div class="mb-4 flex justify-between items-center">
+                <div>
+                    <label class="inline-flex items-center text-gray-700 font-semibold">
+                        <input type="checkbox" name="remember_me" class="form-checkbox text-sky-600">
+                        <span class="ml-2">Recordarme</span>
+                    </label>
+                </div>
+                <div>
+                    <a href="#" class="text-sky-600 text-sm">¿Olvidaste tu contraseña?</a>
+                </div>
+            </div>
+        
+            <button type="submit" class="w-full bg-sky-600 text-white font-semibold py-3 rounded-lg hover:bg-sky-700 transition-all">
+                Iniciar Sesión
+            </button>
+        
+            <div class="text-center mt-4">
+                <span class="text-sm text-gray-600">¿No tienes una cuenta? <a href="{% url 'security:register' %}" class="text-sky-600">Regístrate aquí</a></span>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
