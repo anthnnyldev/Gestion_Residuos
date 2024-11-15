@@ -1,13 +1,47 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, View, ListView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
+from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponseForbidden
-from core.dashboard.models import Product, ProductRequest
+from core.dashboard.models import Product, ProductRequest, Reward
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'core/dashboard/home.html'
     login_url = '/security/auth/login'
+
+class RewardListView(ListView):
+    model = Reward
+    template_name = 'core/dashboard/rewards/rewards.html'
+    context_object_name = 'rewards'
+
+    def get_queryset(self):
+        return Reward.objects.all()
+    
+class RewardCreateView(CreateView):
+    model = Reward
+    template_name = 'core/dashboard/rewards/reward_form.html'
+    fields = ['name', 'description', 'points_required', 'image']
+    success_url = reverse_lazy('dashboard:rewards_list')
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+    
+class RewardUpdateView(UpdateView):
+    model = Reward
+    template_name = 'core/dashboard/rewards/reward_form.html'
+    fields = ['name', 'description', 'points_required', 'image']
+    context_object_name = 'reward'
+    success_url = reverse_lazy('dashboard:rewards_list')
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+    
+class RewardDeleteView(DeleteView):
+    model = Reward
+    template_name = 'core/dashboard/rewards/reward_delete.html'
+    context_object_name = 'reward'
+    success_url = reverse_lazy('dashboard:rewards_list') 
 
 class ProductView(LoginRequiredMixin, TemplateView):
     template_name = 'core/dashboard/product.html'

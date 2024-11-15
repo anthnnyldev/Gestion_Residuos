@@ -36,6 +36,7 @@
                 <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-history mr-2"></i>Historial de Puntos</a></li>
             {% else %}
                 <li><a href="{% url 'dashboard:product_view' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-list-ul mr-2"></i>Ver Productos</a></li>
+                <li><a href="{% url 'dashboard:rewards_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-gift mr-2"></i>Premios</a></li>
                 <li><a href="{% url 'dashboard:product_requests_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx bx-cart mr-2"></i>Lista de Solicitudes</a></li>
                 <li><a href="{% url 'dashboard:point_history' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-history mr-2"></i>Mi Historial de Puntos</a></li>
             {% endif %}

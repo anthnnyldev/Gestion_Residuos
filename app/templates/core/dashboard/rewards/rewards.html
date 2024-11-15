@@ -1,0 +1,45 @@
+{% extends 'components/base_dash.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6">
+    <h2 class="text-3xl font-semibold text-white mb-6">Lista de Premios</h2>
+    
+    <!-- Botón para crear nuevo premio -->
+    <div class="mb-4">
+        <a href="{% url 'dashboard:reward_create' %}" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
+            Crear Nuevo Premio
+        </a>
+    </div>
+
+    <!-- Cards de premios -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for reward in rewards %}
+        <div class="bg-gray-800 text-white rounded-lg shadow-md p-4">
+            <div class="mb-4">
+                <h3 class="text-xl font-semibold">{{ reward.name }}</h3>
+                <p class="text-sm text-gray-400 mt-2">{{ reward.description }}</p>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-400">Puntos Requeridos: {{ reward.points_required }}</p>
+            </div>
+            <div class="mb-4">
+                {% if reward.image %}
+                    <img src="{{ reward.image.url }}" alt="{{ reward.name }}" class="w-24 h-24 object-cover rounded-full mx-auto">
+                {% else %}
+                    <span class="text-gray-500">Sin imagen</span>
+                {% endif %}
+            </div>
+            <div class="flex justify-between">
+                <!-- Botones de acción -->
+                <a href="{% url 'dashboard:reward_edit' reward.id %}" class="text-blue-500 hover:text-blue-700">Editar</a>
+                <a href="{% url 'dashboard:reward_delete' reward.id %}" class="text-red-500 hover:text-red-700">Eliminar</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-4 text-center text-sm text-gray-500">
+            No hay premios disponibles
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

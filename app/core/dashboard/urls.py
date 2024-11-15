@@ -35,4 +35,10 @@ urlpatterns = [
 
     #HISTORY POINT
     path('point-history/', point.PointHistoryListView.as_view(), name='point_history'),
+
+    #REWARS
+    path('rewards/', home.RewardListView.as_view(), name='rewards_list'),
+    path('rewards/create/', home.RewardCreateView.as_view(), name='reward_create'),
+    path('rewards/<int:pk>/edit/', home.RewardUpdateView.as_view(), name='reward_edit'),
+    path('rewards/<int:pk>/delete/', home.RewardDeleteView.as_view(), name='reward_delete'),
 ]

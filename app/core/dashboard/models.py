@@ -253,3 +253,12 @@ class ProductRequest(models.Model):
         self.status = 'DENIED'
         self.reviewed_by = admin_user
         self.save()
+
+class Reward(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    points_required = models.PositiveIntegerField()
+    image = models.ImageField(upload_to='rewards/')
+    
+    def __str__(self):
+        return self.name
