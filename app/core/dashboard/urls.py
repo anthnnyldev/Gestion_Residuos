@@ -32,4 +32,7 @@ urlpatterns = [
     #REQUEST PRODUCT
     path('product-requests/', point.ProductRequestListView.as_view(), name='product_requests_list'),
     path('product-requests/action/<int:pk>/', point.ProductRequestActionView.as_view(), name='product_request_action'),
+
+    #HISTORY POINT
+    path('point-history/', point.PointHistoryListView.as_view(), name='point_history'),
 ]

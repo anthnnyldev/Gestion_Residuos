@@ -10,12 +10,22 @@
 </head>
 <body class="bg-gray-900 text-white flex">
 
+    
     <!-- Menú lateral -->
     <aside id="sidebar" class="bg-gray-800 w-52 min-h-screen p-4 fixed md:relative transform md:translate-x-0 flex flex-col">
-        <a href="{% url 'dashboard:home' %}" class="text-xl font-bold mb-12 pt-4 block">
+        <a href="{% url 'dashboard:home' %}" class="text-xl font-bold mb-6 pt-4 block">
             Panel de Control
         </a>
+        
         <ul class="space-y-6 flex-grow">
+            <!-- Puntos totales -->
+            <div class="p-2 bg-gray-700 rounded-lg">
+                <h2 class="text-lg font-semibold text-white">Puntos Totales</h2>
+                <p class="text-sm mt-2">
+                    <span class="text-yellow-400 font-bold">{{ total_points }} Puntos</span> <!-- Cambié 'points' por 'total_points' -->
+                </p>
+            </div>
+
             {% if request.user.is_superuser %}
                 <li><a href="{% url 'dashboard:category_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-category-alt mr-2"></i>Categorías</a></li>
                 <li><a href="{% url 'dashboard:unit_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-package mr-2"></i>Unidades</a></li>
@@ -26,9 +36,8 @@
                 <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-history mr-2"></i>Historial de Puntos</a></li>
             {% else %}
                 <li><a href="{% url 'dashboard:product_view' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-list-ul mr-2"></i>Ver Productos</a></li>
-                <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-cart mr-2"></i>Solicitar Gestionar Producto</a></li>
-                <li><a href="{% url 'dashboard:product_requests_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-list-ul mr-2"></i>Lista de Solicitudes</a></li>
-                <li><a href="#" class="hover:text-gray-400 flex items-center"><i class="bx bx-history mr-2"></i>Mi Historial de Puntos</a></li>
+                <li><a href="{% url 'dashboard:product_requests_list' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx bx-cart mr-2"></i>Lista de Solicitudes</a></li>
+                <li><a href="{% url 'dashboard:point_history' %}" class="hover:text-gray-400 flex items-center"><i class="bx bx-history mr-2"></i>Mi Historial de Puntos</a></li>
             {% endif %}
         </ul>
 

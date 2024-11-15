@@ -218,22 +218,34 @@ class ProductRequest(models.Model):
         return f"Solicitud de {self.user} para {self.product} - {self.get_status_display()}"
 
     def approve(self, admin_user, points):
+        if points < 0:
+            raise ValidationError("Los puntos no pueden ser negativos.")
+        
+        # Verificar si ya existen puntos asignados para la solicitud
+        existing_points = Points.objects.filter(user=self.user, action_type='PRODUCT_REQUEST').first()
+        if existing_points:
+            # Si ya existe un registro de puntos, actualízalo en lugar de crear uno nuevo
+            existing_points.number += points
+            existing_points.save()
+        else:
+            # Si no existe, crea uno nuevo
+            Points.objects.create(
+                user=self.user,
+                number=points,
+                action_type='PRODUCT_REQUEST',
+                created_by=admin_user
+            )
+
         self.status = 'APPROVED'
         self.reviewed_by = admin_user
         self.points_assigned = points
         self.save()
 
+        # Registrar el historial de puntos
         PointHistory.objects.create(
             user=self.user,
             points=points,
             action=f"Producto gestionado: {self.product.name}",
-            created_by=admin_user
-        )
-
-        Points.objects.create(
-            user=self.user,
-            number=points,
-            action_type='PRODUCT_REQUEST',
             created_by=admin_user
         )
 

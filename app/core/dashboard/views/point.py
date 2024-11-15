@@ -57,3 +57,11 @@ class ProductRequestActionView(View):
             messages.error(request, "Acción inválida.")
 
         return redirect("dashboard:product_requests_list")
+    
+class PointHistoryListView(ListView):
+    model = PointHistory
+    template_name = "core/points/point_history.html"
+    context_object_name = "point_histories"
+
+    def get_queryset(self):
+        return PointHistory.objects.filter(user=self.request.user).order_by('-created_at')
