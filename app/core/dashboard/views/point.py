@@ -7,7 +7,7 @@ from core.dashboard.models import ProductRequest, Points, PointHistory
 
 class ProductRequestListView(ListView):
     model = ProductRequest
-    template_name = "core/dashboard/points/product_requests.html"
+    template_name = "core/points/product_requests.html"
     context_object_name = "requests"
 
     def get_queryset(self):
@@ -26,12 +26,12 @@ class ProductRequestActionView(View):
 
         if not request.user.is_superuser:
             messages.error(request, "No tienes permiso para realizar esta acción.")
-            return redirect("product_requests")
+            return redirect("dashboard:product_requests_list")
 
         if action == "approve":
             if points < 0:
                 messages.error(request, "No se pueden asignar puntos negativos.")
-                return redirect("product_requests")
+                return redirect("dashboard:product_requests_list")
 
             product_request.approve(admin_user=request.user, points=points)
             
@@ -56,4 +56,4 @@ class ProductRequestActionView(View):
         else:
             messages.error(request, "Acción inválida.")
 
-        return redirect("product_requests")
+        return redirect("dashboard:product_requests_list")

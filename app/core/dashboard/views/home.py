@@ -21,7 +21,7 @@ class ProductView(LoginRequiredMixin, TemplateView):
 class ProductRequestCreateView(View):
     def get(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
-        return render(request, 'core/dashboard/request_product.html', {'product': product})
+        return render(request, 'core/request/request.html', {'product': product})
 
     def post(self, request, product_id):
         if not request.user.is_authenticated:
@@ -36,4 +36,4 @@ class ProductRequestCreateView(View):
         )
 
         messages.success(request, f'Solicitud para el producto {product.name} creada correctamente.')
-        return redirect('product_requests')
+        return redirect('dashboard:product_view')
