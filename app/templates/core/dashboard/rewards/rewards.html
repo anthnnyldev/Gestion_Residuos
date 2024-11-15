@@ -43,13 +43,20 @@
                     <span class="bg-white text-gray-800 px-3 py-1 text-sm rounded-full">{{ reward.points_required }} Puntos</span>
                 </div>
 
+                <!-- Botón para canjear producto -->
+                <div class="mb-4">
+                    <a href="#" class="block bg-blue-500 text-white text-center px-6 py-2 rounded-lg hover:bg-blue-600">
+                        Canjear Producto
+                    </a>
+                </div>
+
                 <!-- Botones de acción (solo visibles para superusuarios) -->
+                {% if user.is_superuser %}
                 <div class="flex justify-between">
-                    {% if user.is_superuser %}
                     <a href="{% url 'dashboard:reward_edit' reward.id %}" class="text-blue-500 hover:text-blue-700">Editar</a>
                     <a href="{% url 'dashboard:reward_delete' reward.id %}" class="text-red-500 hover:text-red-700">Eliminar</a>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
         </div>
         {% empty %}
