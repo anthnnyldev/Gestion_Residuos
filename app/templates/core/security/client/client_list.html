@@ -1,0 +1,76 @@
+{% extends 'components/base_dash.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6">
+    <h2 class="text-3xl font-semibold text-white mb-6">Lista de Clientes</h2>
+
+    <!-- Mensajes de éxito o error -->
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+            <div class="bg-green-500 text-white p-2 rounded mb-2">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Cards de clientes -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for client in clients %}
+        <div class="bg-gray-800 text-white rounded-lg shadow-md p-4">
+            <div class="mb-4">
+                <h3 class="text-xl font-semibold">{{ client.get_full_name }}</h3>
+                <p class="text-sm text-gray-400 mt-2">{{ client.email }}</p>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-400">Rol: {{ client.get_role_display }}</p>
+            </div>
+            <div class="flex justify-between">
+                <!-- Botones para asignar/remover administrador -->
+                <form action="{% url 'security:client_list' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ client.id }}">
+                    {% if client.is_admin %}
+                        <button type="submit" name="action" value="remove_admin" class="text-red-500 hover:text-red-700">Quitar Administrador</button>
+                    {% else %}
+                        <button type="submit" name="action" value="assign_admin" class="text-blue-500 hover:text-blue-700">Asignar Administrador</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-4 text-center text-sm text-gray-500">
+            No hay clientes disponibles
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginación -->
+    <div class="mt-6">
+        <div class="flex justify-between">
+            <span class="text-gray-500">Mostrando {{ clients.paginator.page }} de {{ clients.paginator.num_pages }} páginas</span>
+            <div class="flex">
+                <span class="mr-2">
+                    {% if clients.has_previous %}
+                        <a href="?page=1" class="text-blue-500 hover:text-blue-700">Primera</a>
+                    {% endif %}
+                </span>
+                <span class="mr-2">
+                    {% if clients.has_previous %}
+                        <a href="?page={{ clients.previous_page_number }}" class="text-blue-500 hover:text-blue-700">Anterior</a>
+                    {% endif %}
+                </span>
+                <span class="mr-2">
+                    {% if clients.has_next %}
+                        <a href="?page={{ clients.next_page_number }}" class="text-blue-500 hover:text-blue-700">Siguiente</a>
+                    {% endif %}
+                </span>
+                <span>
+                    {% if clients.has_next %}
+                        <a href="?page={{ clients.paginator.num_pages }}" class="text-blue-500 hover:text-blue-700">Última</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
