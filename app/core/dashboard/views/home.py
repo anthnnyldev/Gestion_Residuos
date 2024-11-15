@@ -9,6 +9,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'core/dashboard/home.html'
     login_url = '/security/auth/login'
 
+class GitfView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/dashboard/home.html'
+    login_url = '/security/auth/login'
+
 class ProductView(LoginRequiredMixin, TemplateView):
     template_name = 'core/dashboard/product.html'
     login_url = '/security/auth/login'

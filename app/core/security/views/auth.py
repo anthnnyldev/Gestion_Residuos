@@ -26,7 +26,7 @@ class RegisterView(CreateView):
 class LoginView(FormView):
     form_class = LoginForm
     template_name = 'core/security/auth/login.html'
-    success_url = reverse_lazy('home:home')
+    success_url = reverse_lazy('dashboard:home')
 
     def form_valid(self, form):
         user = form.cleaned_data['user']
