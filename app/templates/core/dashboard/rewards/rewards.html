@@ -45,7 +45,7 @@
 
                 <!-- Botón para canjear producto -->
                 <div class="mb-4">
-                    <a href="#" class="block bg-blue-500 text-white text-center px-6 py-2 rounded-lg hover:bg-blue-600">
+                    <a href="{% url 'dashboard:redeem_confirm' pk=reward.id %}" class="block bg-blue-500 text-white text-center px-6 py-2 rounded-lg hover:bg-blue-600">
                         Canjear Producto
                     </a>
                 </div>

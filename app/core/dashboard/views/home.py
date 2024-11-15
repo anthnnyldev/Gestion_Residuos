@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponseForbidden
-from core.dashboard.models import Product, ProductRequest, Reward
+from core.dashboard.models import Product, ProductRequest, Reward, PointHistory, Points
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'core/dashboard/home.html'
@@ -42,6 +42,42 @@ class RewardDeleteView(DeleteView):
     template_name = 'core/dashboard/rewards/reward_delete.html'
     context_object_name = 'reward'
     success_url = reverse_lazy('dashboard:rewards_list') 
+
+
+class RedeemRewardConfirmationView(LoginRequiredMixin, TemplateView):
+    template_name = "core/dashboard/rewards/redeem_confirmation.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        reward_id = self.kwargs.get("pk")
+        reward = get_object_or_404(Reward, id=reward_id)
+        context["reward"] = reward
+        return context
+
+
+class RedeemRewardView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        reward_id = kwargs.get("pk")
+        reward = get_object_or_404(Reward, id=reward_id)
+        user = request.user
+
+        # Calcular los puntos del usuario
+        total_points = sum(point.number for point in user.points.all())
+
+        if total_points < reward.points_required:
+            messages.error(request, "No tienes suficientes puntos para canjear este premio.")
+            return redirect(reverse_lazy("rewards:reward_list"))
+
+        # Registrar en el historial de puntos
+        PointHistory.objects.create(
+            user=user,
+            points=reward.points_required,
+            action=f"Canjeado: {reward.name}",
+            created_by=user,
+        )
+
+        messages.success(request, f"Has canjeado el premio: {reward.name}.")
+        return redirect(reverse_lazy("dashboard:rewards_list"))
 
 class ProductView(LoginRequiredMixin, TemplateView):
     template_name = 'core/dashboard/product.html'

@@ -38,13 +38,6 @@ class ProductRequestActionView(View):
 
             # Aprobar la solicitud y asignar puntos
             product_request.approve(admin_user=request.user, points=points)
-            
-            points_record = Points.objects.create(
-                user=product_request.user,
-                number=points,
-                action_type='PRODUCT_REQUEST',
-                created_by=request.user
-            )
 
             # Solo se crea el historial de puntos cuando la solicitud es aprobada
             PointHistory.objects.create(
